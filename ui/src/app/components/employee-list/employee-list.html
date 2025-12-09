@@ -1,0 +1,31 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Employee List</h1>
+
+  <button routerLink="/add" class="px-4 py-2 bg-blue-600 text-white rounded mb-4">
+    + Add Employee
+  </button>
+
+  <table class="w-full text-left border">
+    <tr class="border-b">
+      <th class="p-2">Name</th>
+      <th class="p-2">Email</th>
+      <th class="p-2">Position</th>
+      <th class="p-2">Salary</th>
+      <th class="p-2">Actions</th>
+    </tr>
+    
+    <ng-template>
+      <tr *ngFor="let emp of employees" class="border-b">
+        <td class="p-2">{{ emp.name }}</td>
+        <td class="p-2">{{ emp.email }}</td>
+        <td class="p-2">{{ emp.position }}</td>
+        <td class="p-2">{{ emp.salary }}</td>
+        <td class="p-2 flex gap-2">
+          <button [routerLink]="['/edit', emp._id]" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</button>
+          <button (click)="deleteEmployee(emp._id)" class="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
+        </td>
+      </tr>
+    </ng-template>
+  </table>
+</div>
+
