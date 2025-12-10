@@ -1,14 +1,50 @@
 <div class="p-6 max-w-lg mx-auto">
   <h1 class="text-xl font-bold mb-4">{{ isEdit ? 'Edit' : 'Add' }} Employee</h1>
 
-  <form (ngSubmit)="submitForm()" class="space-y-4">
-    <input class="w-full border p-2 rounded" placeholder="Name" [(ngModel)]="employee.name" name="name">
-    <input class="w-full border p-2 rounded" placeholder="Email" [(ngModel)]="employee.email" name="email">
-    <input class="w-full border p-2 rounded" placeholder="Position" [(ngModel)]="employee.position" name="position">
-    <input class="w-full border p-2 rounded" placeholder="Salary" type="number" [(ngModel)]="employee.salary" name="salary">
+  <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 rounded">
+    {{ errorMessage }}
+  </div>
 
-    <button class="px-4 py-2 bg-green-600 text-white rounded">
-      Save
-    </button>
-  </form>
+  <div *ngIf="loading" class="text-center py-8 animate-pulse">
+    <p>Loading...</p>
+  </div>
+  <div *ngIf="!loading">
+    <form (ngSubmit)="submitForm()" class="space-y-4">
+      <input 
+        class="w-full border p-2 rounded" 
+        placeholder="Name" 
+        [(ngModel)]="employee.name" 
+        name="name"
+        required>
+      <input 
+        class="w-full border p-2 rounded" 
+        placeholder="Email" 
+        [(ngModel)]="employee.email" 
+        name="email"
+        type="email"
+        required>
+      <input 
+        class="w-full border p-2 rounded" 
+        placeholder="Position" 
+        [(ngModel)]="employee.position" 
+        name="position"
+        required>
+      <input 
+        class="w-full border p-2 rounded" 
+        placeholder="Salary" 
+        type="number" 
+        [(ngModel)]="employee.salary" 
+        name="salary"
+        required>
+
+      <div class="flex items-center justify-between">
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Save
+        </button>
+        <button type="button" (click)="cancelForm()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { EmployeeService } from '../../services/employee-service';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-employee-list',
@@ -12,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export default class EmployeeList implements OnInit {
     employees: any[] = [];
   loading = true;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private employeeService: EmployeeService,
@@ -23,7 +26,7 @@ export default class EmployeeList implements OnInit {
   }
 
   loadEmployees() {
-    this.employeeService.getEmployees().subscribe({
+    this.employeeService.getAllEmployeesWithDeleted().subscribe({
       next: (res: any) => {
         this.employees = res;
         this.loading = false;
@@ -36,14 +39,40 @@ export default class EmployeeList implements OnInit {
   }
 
   deleteEmployee(id: string) {
-    if (confirm('Are you sure you want to delete this employee?')) {
-      this.employeeService.deleteEmployee(id).subscribe({
-        next: () => {
-          this.employees = this.employees.filter(emp => emp._id !== id);
-        },
-        error: (err) => console.error('Delete failed:', err)
-      });
+    if (confirm('Soft delete this employee? You can restore it later.')) {
+      this.employeeService.deleteEmployee(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.employees = this.employees.filter(emp => emp._id !== id);
+          },
+          error: (err) => console.error('Delete failed:', err)
+        });
     }
+  }
+
+  permanentDeleteEmployee(id: string) {
+    if (confirm('WARNING: Permanently delete this employee? This cannot be undone!')) {
+      this.employeeService.permanentDeleteEmployee(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.employees = this.employees.filter(emp => emp._id !== id);
+          },
+          error: (err) => console.error('Permanent delete failed:', err)
+        });
+    }
+  }
+
+  restoreEmployee(id: string) {
+    this.employeeService.restoreEmployee(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.loadEmployees();
+        },
+        error: (err) => console.error('Restore failed:', err)
+      });
   }
 
   goToAdd() {
