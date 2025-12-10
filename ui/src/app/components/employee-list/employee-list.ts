@@ -39,8 +39,8 @@ export default class EmployeeList implements OnInit {
   }
 
   deleteEmployee(id: string) {
-    if (confirm('Soft delete this employee? You can restore it later.')) {
-      this.employeeService.deleteEmployee(id)
+    if (confirm('Delete this employee? You can restore it later.')) {
+      this.employeeService.softDeleteEmployee(id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
