@@ -16,7 +16,7 @@ export class EmployeeService {
 
   constructor(private http: HttpClient) {}
 
-  getEmployees(): Observable<any[]> {
+  getActiveEmployees(): Observable<any[]> {
     const now = Date.now();
     const cachedTime = this.cacheTime.get('employees') || 0;
 
@@ -27,13 +27,13 @@ export class EmployeeService {
       return of(this.employeesCache$.value);
     }
 
-    return this.http.get<any[]>(`${this.API_URL}/all/deleted-users`).pipe(
+    return this.http.get<any[]>(`${this.API_URL}/all/active-users`).pipe(
       tap((data) => {
         this.employeesCache$.next(data);
         this.cacheTime.set('employees', now);
       }),
       catchError((err) => {
-        console.error('Error fetching employees:', err);
+        console.error('Error fetching non-deleted employees:', err);
         return of(this.employeesCache$.value);
       }),
       shareReplay(1)
@@ -63,7 +63,7 @@ export class EmployeeService {
     );
   }
 
-  getAllEmployeesWithDeleted(): Observable<any[]> {
+  getAllEmployees(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/all/users`).pipe(
       catchError((err) => {
         console.error('Error fetching all employees:', err);
@@ -72,7 +72,7 @@ export class EmployeeService {
     );
   }
 
-  getDeletedEmployees(): Observable<any[]> {
+  getDeletedEmployeesList(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/deleted/list`).pipe(
       catchError((err) => {
         console.error('Error fetching deleted employees:', err);

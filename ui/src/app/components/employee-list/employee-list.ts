@@ -26,7 +26,7 @@ export default class EmployeeList implements OnInit {
   }
 
   loadEmployees() {
-    this.employeeService.getAllEmployeesWithDeleted().subscribe({
+    this.employeeService.getAllEmployees().subscribe({
       next: (res: any) => {
         this.employees = res;
         this.loading = false;
