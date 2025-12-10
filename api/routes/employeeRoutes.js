@@ -3,12 +3,12 @@ import Employee from "../models/employee.js";
 const router = express.Router();
 
 // Get all active employees (soft delete filter)
-router.get("/all/deleted-users", async (req, res) => {
+router.get("/all/active-users", async (req, res) => {
   try {
     const employees = await Employee.find({ isDeleted: false }).sort({ createdAt: -1 });
     res.json(employees);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching employees", error: error.message });
+    res.status(500).json({ message: "Error fetching deleted employees", error: error.message });
   }
 });
 
