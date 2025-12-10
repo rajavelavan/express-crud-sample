@@ -1,11 +1,17 @@
 <div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">Employee List</h1>
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold mb-4">Employee List</h1>
+    <button routerLink="/add" class="px-4 py-2 bg-blue-600 text-white rounded mb-4">
+      + Add Employee
+    </button>
+  </div>
 
-  <button routerLink="/add" class="px-4 py-2 bg-blue-600 text-white rounded mb-4">
-    + Add Employee
-  </button>
+  <div *ngIf="loading" class="text-center py-8 animate-pulse">
+    <p>Loading employees...</p>
+  </div>
 
-  <table class="w-full text-left border">
+  <div *ngIf="!loading">
+  <table class="w-full text-center border" *ngIf="!loading">
     <tr class="border-b">
       <th class="p-2">Name</th>
       <th class="p-2">Email</th>
@@ -14,18 +20,24 @@
       <th class="p-2">Actions</th>
     </tr>
     
-    <ng-template>
-      <tr *ngFor="let emp of employees" class="border-b">
-        <td class="p-2">{{ emp.name }}</td>
-        <td class="p-2">{{ emp.email }}</td>
-        <td class="p-2">{{ emp.position }}</td>
-        <td class="p-2">{{ emp.salary }}</td>
-        <td class="p-2 flex gap-2">
-          <button [routerLink]="['/edit', emp._id]" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</button>
-          <button (click)="deleteEmployee(emp._id)" class="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
-        </td>
-      </tr>
-    </ng-template>
+    <tr *ngFor="let emp of employees" class="border-b">
+      <td class="p-2">{{ emp.name }}</td>
+      <td class="p-2">{{ emp.email }}</td>
+      <td class="p-2">{{ emp.position }}</td>
+      <td class="p-2">{{ emp.salary }}</td>
+      <td class="p-2 flex gap-2 items-center justify-center" *ngIf="emp.isDeleted === true">
+        <button (click)="restoreEmployee(emp._id)" class="px-3 py-1 bg-green-600 text-white rounded">Restore</button>
+        <button (click)="permanentDeleteEmployee(emp._id)" class="px-3 py-1 bg-red-800 text-white rounded">Permanent Delete</button>
+      </td>
+      <td *ngIf="emp.isDeleted === false" class="p-2 flex gap-2 items-center justify-center">
+        <button [routerLink]="['/edit', emp._id]" class="px-3 py-1 bg-yellow-500 text-white rounded">Edit</button>
+        <button (click)="deleteEmployee(emp._id)" class="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
+      </td>
+    </tr>
   </table>
+  
+  <div *ngIf="!loading && employees.length === 0" class="text-center py-8">
+    <p>No employees found.</p>
+  </div>
 </div>
 
