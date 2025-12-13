@@ -1,0 +1,9 @@
+# Ignore the node_modules folder locally; it will be created inside the container
+node_modules
+# Ignore git-related files
+.git
+.gitignore
+# Ignore npm debug logs
+npm-debug.log
+# Ignore any editor configuration files
+.vscode
