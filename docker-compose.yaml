@@ -1,0 +1,18 @@
+version: '3.8'
+name: express-angular-demo
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    container_name: express-demo-api
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    container_name: angular-ui
