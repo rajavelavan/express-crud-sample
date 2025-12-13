@@ -16,7 +16,7 @@ export class EmployeeService {
 
   constructor(private http: HttpClient) {}
 
-  getEmployees(): Observable<any[]> {
+  getActiveEmployees(): Observable<any[]> {
     const now = Date.now();
     const cachedTime = this.cacheTime.get('employees') || 0;
 
@@ -27,13 +27,13 @@ export class EmployeeService {
       return of(this.employeesCache$.value);
     }
 
-    return this.http.get<any[]>(`${this.API_URL}/all`).pipe(
+    return this.http.get<any[]>(`${this.API_URL}/all/active-users`).pipe(
       tap((data) => {
         this.employeesCache$.next(data);
         this.cacheTime.set('employees', now);
       }),
       catchError((err) => {
-        console.error('Error fetching employees:', err);
+        console.error('Error fetching non-deleted employees:', err);
         return of(this.employeesCache$.value);
       }),
       shareReplay(1)
@@ -63,8 +63,8 @@ export class EmployeeService {
     );
   }
 
-  getAllEmployeesWithDeleted(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.API_URL}/all/with-deleted`).pipe(
+  getAllEmployees(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API_URL}/all/users`).pipe(
       catchError((err) => {
         console.error('Error fetching all employees:', err);
         return of([]);
@@ -72,7 +72,7 @@ export class EmployeeService {
     );
   }
 
-  getDeletedEmployees(): Observable<any[]> {
+  getDeletedEmployeesList(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API_URL}/deleted/list`).pipe(
       catchError((err) => {
         console.error('Error fetching deleted employees:', err);
@@ -82,7 +82,7 @@ export class EmployeeService {
   }
 
   addEmployee(data: any): Observable<any> {
-    return this.http.post(`${this.API_URL}/add`, data).pipe(
+    return this.http.post(`${this.API_URL}/add-user`, data).pipe(
       tap(() => this.invalidateCache()),
       catchError((err) => {
         console.error('Error adding employee:', err);
@@ -102,7 +102,7 @@ export class EmployeeService {
   }
 
   // Soft delete
-  deleteEmployee(id: string): Observable<any> {
+  softDeleteEmployee(id: string): Observable<any> {
     return this.http.delete(`${this.API_URL}/${id}`).pipe(
       tap(() => this.invalidateCache()),
       catchError((err) => {
@@ -114,7 +114,7 @@ export class EmployeeService {
 
   // Hard delete (permanent)
   permanentDeleteEmployee(id: string): Observable<any> {
-    return this.http.delete(`${this.API_URL}/${id}/permanent`).pipe(
+    return this.http.delete(`${this.API_URL}/${id}/permanent-delete`).pipe(
       tap(() => this.invalidateCache()),
       catchError((err) => {
         console.error('Error permanently deleting employee:', err);
@@ -125,7 +125,7 @@ export class EmployeeService {
 
   // Restore soft deleted employee
   restoreEmployee(id: string): Observable<any> {
-    return this.http.patch(`${this.API_URL}/${id}/restore`, {}).pipe(
+    return this.http.patch(`${this.API_URL}/${id}/restore-user`, {}).pipe(
       tap(() => this.invalidateCache()),
       catchError((err) => {
         console.error('Error restoring employee:', err);

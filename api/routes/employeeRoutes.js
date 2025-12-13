@@ -3,17 +3,17 @@ import Employee from "../models/employee.js";
 const router = express.Router();
 
 // Get all active employees (soft delete filter)
-router.get("/all", async (req, res) => {
+router.get("/all/active-users", async (req, res) => {
   try {
     const employees = await Employee.find({ isDeleted: false }).sort({ createdAt: -1 });
     res.json(employees);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching employees", error: error.message });
+    res.status(500).json({ message: "Error fetching deleted employees", error: error.message });
   }
 });
 
 // Get all employees including soft deleted
-router.get("/all/with-deleted", async (req, res) => {
+router.get("/all/users", async (req, res) => {
   try {
     const employees = await Employee.find().sort({ createdAt: -1 });
     res.json(employees);
@@ -48,7 +48,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create new employee
-router.post("/add", async (req, res) => {
+router.post("/add-user", async (req, res) => {
   try {
     const { name, email, position, salary } = req.body;
 
@@ -153,7 +153,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Hard delete (permanently remove from database)
-router.delete("/:id/permanent", async (req, res) => {
+router.delete("/:id/permanent-delete", async (req, res) => {
   try {
     const employee = await Employee.findByIdAndDelete(req.params.id);
 
@@ -171,7 +171,7 @@ router.delete("/:id/permanent", async (req, res) => {
 });
 
 // Restore soft deleted employee
-router.patch("/:id/restore", async (req, res) => {
+router.patch("/:id/restore-user", async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
 

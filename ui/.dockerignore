@@ -1,0 +1,12 @@
+# Ignore Node.js modules
+node_modules
+# Ignore the development and production build outputs (they are generated inside the container)
+dist
+.angular
+# Other common files to ignore
+.git
+.gitignore
+.editorconfig
+.vscode
+npm-debug.log
+yarn-error.log

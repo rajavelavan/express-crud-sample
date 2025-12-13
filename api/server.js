@@ -10,10 +10,10 @@ app.use(express.json());
 dotenv.config();
 dbConnect();
 
-// app.get("/", (req, res) => {
-//     console.log("API is running...");
-//     res.send("API is running...");
-// })
+app.get("/", (req, res) => {
+    console.log("API is running...");
+    res.send("API is running...");
+})
 
 app.use("/api/employees", employeeRoutes);
 

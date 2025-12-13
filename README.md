@@ -1,4 +1,4 @@
-# Employee Management — Express + Angular (SSR) Starter(PoC)
+# Employee Management — Express + Angular (SSR) Starter(Practice Project)
 
 A small MEAN project (Express + MongoDB backend, Angular frontend with SSR support). Quick reference to run and develop the project.
 
